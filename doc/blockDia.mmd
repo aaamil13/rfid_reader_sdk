@@ -1,0 +1,225 @@
+classDiagram
+    %% Интерфейс AppNotify и имплементации
+    class AppNotify {
+        <<interface>>
+        +notify_recv_tags(message, start_index)
+        +notify_start_inventory(message, start_index)
+        +notify_stop_inventory(message, start_index)
+        +notify_reset(message, start_index)
+        +notify_read_tag_block(message, start_index)
+        +notify_write_tag_block(message, start_index)
+        +notify_lock_tag(message, start_index)
+        +notify_kill_tag(message, start_index)
+        +notify_inventory_once(message, start_index)
+    }
+    
+    class GeneralReaderNotifyImpl {
+        +notify_recv_tags(message, start_index)
+        +notify_start_inventory(message, start_index)
+        +notify_stop_inventory(message, start_index)
+        +notify_reset(message, start_index)
+        +notify_read_tag_block(message, start_index)
+        +notify_write_tag_block(message, start_index)
+        +notify_lock_tag(message, start_index)
+        +notify_kill_tag(message, start_index)
+        +notify_inventory_once(message, start_index)
+        +notify_query_muti_param(message, start_index)
+        +notify_set_muti_param(message, start_index)
+    }
+    
+    class MRfidReaderNotifyImpl {
+        -TLV_ONE_TAG_DATA
+        -TLV_EPC
+        +get_tlv_position(message, start_index, param_len, tlv_type)
+        +notify_recv_tags(message, start_index)
+        +notify_start_inventory(message, start_index)
+        +notify_stop_inventory(message, start_index)
+        +notify_reset(message, start_index)
+        +notify_read_tag_block(message, start_index)
+        +notify_write_tag_block(message, start_index)
+        +notify_lock_tag(message, start_index)
+        +notify_kill_tag(message, start_index)
+        +notify_inventory_once(message, start_index)
+    }
+    
+    class R2000ReaderNotifyImpl {
+        +notify_recv_tags(message, start_index)
+        +notify_start_inventory(message, start_index)
+        +notify_stop_inventory(message, start_index)
+        +notify_reset(message, start_index)
+        +notify_read_tag_block(message, start_index)
+        +notify_write_tag_block(message, start_index)
+        +notify_lock_tag(message, start_index)
+        +notify_kill_tag(message, start_index)
+        +notify_inventory_once(message, start_index)
+    }
+    
+    %% Транспортен слой
+    class Transport {
+        <<abstract>>
+        +CONNECT_STATUS_DISCONNECT
+        +CONNECT_STATUS_GET_LOCAL_RESOURCE
+        +CONNECT_STATUS_CONNECTED
+        +connect_status
+        +release_resource()
+        +request_local_resource()
+        +send_data(data, data_len)
+        +read_data(data)
+    }
+    
+    class TransportSerialPort {
+        +serial_port_name
+        +baud_rate
+        +serial_port_channel
+        +find_port()
+        +set_serial_port_config(port_name, baud_rate)
+        +get_serial_port_name()
+        +set_serial_port_name(serial_port_name)
+        +get_baud_rate()
+        +set_baud_rate(baud_rate)
+        +release_resource()
+        +request_local_resource()
+        +send_data(data, data_len)
+        +read_data(data)
+    }
+    
+    class TransportTcpClient {
+        +remote_ip
+        +remote_port
+        +local_ip
+        +local_port
+        +client_socket
+        +recv_buffer
+        +set_config(remote_ip, remote_port, local_ip, local_port)
+        +release_resource()
+        +request_local_resource()
+        +send_data(data, data_len)
+        +read_data(data)
+    }
+    
+    class TransportUdp {
+        +remote_ip
+        +remote_port
+        +local_ip
+        +local_port
+        +socket_channel
+        +dst_addr
+        +set_config(remote_ip, remote_port, local_ip, local_port)
+        +release_resource()
+        +request_local_resource()
+        +send_data(data, data_len)
+        +read_data(data)
+    }
+    
+    class TransportThreadManager {
+        -_instance
+        -_instance_lock
+        -selector
+        -reader_map
+        -_receive_thread
+        -_running
+        +get_instance()
+        +initialize_transport_manager()
+        +initialize_threads()
+        +get_reader_iterator()
+        +get_selector()
+        +add_rfid_reader(reader)
+        +stop()
+    }
+    
+    class ReceiveThread {
+        +manager
+        +run()
+    }
+    
+    %% RFID Reader слой
+    class RfidReader {
+        <<abstract>>
+        +CONNECT_TYPE_SERIALPORT
+        +CONNECT_TYPE_NET_UDP
+        +CONNECT_TYPE_NET_TCP_CLIENT
+        +CONNECT_TYPE_NET_TCP_SERVER
+        +MAX_RECV_BUFF_SIZE
+        +MAX_SEND_BUFF_SIZE
+        +key
+        +recv_msg_buff
+        +recv_msg_len
+        +app_notify
+        +send_msg_buff
+        +send_index
+        +recv_len
+        +transport
+        +connect_type
+        +get_app_notify()
+        +set_app_notify(app_notify)
+        +get_key()
+        +connect_physical_interface(physical_name, physical_param, local_addr_str, local_addr_port, connect_type)
+        +get_unsigned_byte(data)
+        +inventory()
+        +inventory_once()
+        +stop()
+        +relay_operation(relay_no, operation_type, time)
+        +reset()
+        +read_tag_block(membank, addr, length)
+        +write_tag_block(membank, addr, length, written_data, write_start_index)
+        +lock_tag(lock_type)
+        +kill_tag()
+        +handle_recv()
+        +handle_message()
+        +notify_message_to_app(message, start_index)
+        +get_transport()
+    }
+    
+    class GeneralReader {
+        +START_CMD_FLAG
+        +START_RSP_FLAG
+        +START_NOTIFY_FLAG
+        +CMD_NOTIFY_TAG
+        +RFID_CMD_* (много други константи)
+        +RFID_TAG_* (константи за области на таг)
+        +RFID_LOCK_* (константи за заключване)
+        +build_message_header(command_code)
+        +_calculate_checksum(message, start_pos, length)
+        +query_parameter(mem_address, query_len)
+        +set_muti_parameter(mem_address, param_len, params)
+    }
+    
+    class MRfidReader {
+        +MREADER_CMD_RESET
+        +MREADER_NOTIFY_TAG
+        +reader_id
+        +_calculate_checksum(message, start_pos, length)
+        +_fill_length_and_checksum()
+        +build_message_header(command_code)
+    }
+    
+    class R2000Reader {
+        +START_RSP_FLAG
+        +START_CMD_FLAG
+        +RFID_CMD_TAG_NOTIFY
+        +RFID_CMD_STOP_INVETORY
+        +RFID_CMD_START_INVENTORY
+        +RFID_CMD_RESET_DEVICE
+        +reader_id
+        +build_message_header(command_code)
+        +_calculate_checksum(message, start_pos, length)
+        +_fill_length_and_checksum()
+    }
+    
+    %% Връзки между класовете
+    GeneralReaderNotifyImpl ..|> AppNotify
+    MRfidReaderNotifyImpl ..|> AppNotify
+    R2000ReaderNotifyImpl ..|> AppNotify
+    
+    TransportSerialPort --|> Transport
+    TransportTcpClient --|> Transport
+    TransportUdp --|> Transport
+    TransportThreadManager -- ReceiveThread
+    
+    GeneralReader --|> RfidReader
+    MRfidReader --|> RfidReader
+    R2000Reader --|> RfidReader
+    
+    RfidReader o-- Transport : uses
+    RfidReader o-- AppNotify : notifies
+    TransportThreadManager o-- RfidReader : manages
