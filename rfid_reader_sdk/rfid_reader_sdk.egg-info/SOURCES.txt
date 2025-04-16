@@ -13,6 +13,13 @@ rfid/reader/general_reader.py
 rfid/reader/m_rfid_reader.py
 rfid/reader/r2000_reader.py
 rfid/reader/rfid_reader.py
+rfid/reader/uhf_protocol/__init__.py
+rfid/reader/uhf_protocol/commands.py
+rfid/reader/uhf_protocol/notification_frames.py
+rfid/reader/uhf_protocol/protocol_base.py
+rfid/reader/uhf_protocol/status_codes.py
+rfid/reader/uhf_protocol/status_translations.py
+rfid/reader/uhf_protocol/tlv_structures.py
 rfid/transport/__init__.py
 rfid/transport/transport.py
 rfid/transport/transport_serial_port.py

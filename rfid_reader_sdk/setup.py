@@ -8,11 +8,18 @@ from setuptools import setup, find_packages
 
 setup(
     name="rfid_reader_sdk",
-    version="0.1.0",
-    description="Python SDK for RFID readers",
-    author="YourName",
+    version="0.1.0",  # увеличете версията, ако желаете, например на "0.2.0"
+    description="RFID Reader SDK",
+    author="Your Name",
     author_email="your.email@example.com",
     packages=find_packages(),
+    # Добавете uhf_protocol пакета
+    package_data={
+        "rfid": ["*"],
+        "rfid.reader": ["*"],
+        "rfid.reader.uhf_protocol": ["*"],  # добавете новия подпакет
+    },
+    python_requires=">=3.6",
     install_requires=[
         "pyserial>=3.5",
     ],
@@ -28,6 +35,6 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
     ],
-    python_requires=">=3.6",
 )

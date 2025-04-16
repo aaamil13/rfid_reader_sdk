@@ -1,8 +1,8 @@
 Metadata-Version: 2.4
 Name: rfid_reader_sdk
 Version: 0.1.0
-Summary: Python SDK for RFID readers
-Author: YourName
+Summary: RFID Reader SDK
+Author: Your Name
 Author-email: your.email@example.com
 Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Developers
@@ -15,6 +15,7 @@ Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
 Requires-Python: >=3.6
 Requires-Dist: pyserial>=3.5
 Dynamic: author
